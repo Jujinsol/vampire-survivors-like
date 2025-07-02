@@ -96,6 +96,8 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         shootCoolTime += Time.deltaTime;
+        Vector3 camPos = Camera.main.transform.position;
+        transform.position = new Vector3(camPos.x, camPos.y, 0f);
         Moving();
     }
 

@@ -8,5 +8,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _inst = this;
+        player = GameObject.Find("Player").gameObject;
     }
 }

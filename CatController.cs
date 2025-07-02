@@ -5,7 +5,6 @@ public class CatController : MonoBehaviour
 {
     public static CatController _inst;
 
-    private GameObject _player;
     private float _speed = 3.0f;
     private bool _isStopped = false;
 
@@ -14,7 +13,6 @@ public class CatController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _player = GameObject.Find("Player").gameObject;
         cameraTransform = Camera.main.transform;
         _inst = this;
     }
@@ -54,21 +52,21 @@ public class CatController : MonoBehaviour
 
     public void MoveToFar()
     {
-        if (_player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Left)
+        if (GameManager._inst.player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Left)
         {
-            transform.position = new Vector3(_player.transform.position.x-transform.position.x, transform.position.y, transform.position.z);
+            transform.position = new Vector3(GameManager._inst.player.transform.position.x-transform.position.x, transform.position.y, transform.position.z);
         }
-        else if (_player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Right)
+        else if (GameManager._inst.player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Right)
         {
-            transform.position = new Vector3(_player.transform.position.x- transform.position.x, transform.position.y, transform.position.z);
+            transform.position = new Vector3(GameManager._inst.player.transform.position.x- transform.position.x, transform.position.y, transform.position.z);
         }
-        else if (_player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Up)
+        else if (GameManager._inst.player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Up)
         {
-            transform.position = new Vector3(transform.position.x, _player.transform.position.y - transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x, GameManager._inst.player.transform.position.y - transform.position.y, transform.position.z);
         }
-        else if (_player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Down)
+        else if (GameManager._inst.player.GetComponent<PlayerController>()._finalDir == Define.FinalDir.Down)
         {
-            transform.position = new Vector3(transform.position.x, _player.transform.position.y - transform.position.y, transform.position.z);
+            transform.position = new Vector3(transform.position.x, GameManager._inst.player.transform.position.y - transform.position.y, transform.position.z);
         }
     }
 }
