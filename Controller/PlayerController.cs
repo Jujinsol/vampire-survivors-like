@@ -1,9 +1,6 @@
-using System.Numerics;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static Define;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using static UnityEditor.PlayerSettings;
 using Quaternion = UnityEngine.Quaternion;
 using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
@@ -12,12 +9,14 @@ public class PlayerController : MonoBehaviour
 {
     private Animator _animator;
 
-    private float _speed = 5.0f, shootCoolTime, attackTime = 3f;
+    public float _speed = 5.0f, shootCoolTime, hurtTime, attackTime = 3f;
     
     public Vector3 offset = new Vector3(0f, 0f, 20f);
     public FinalDir _finalDir;
     private MoveDir _dir;
-    private GameObject _arrow;
+
+    public float currentHp = 100, maxHp = 100;
+    Slider sliderHP;
 
     public MoveDir Dir
     {
@@ -88,7 +87,10 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _animator = GetComponent<Animator>();
-        _arrow = Resources.Load<GameObject>("Prefabs/arrow");
+        sliderHP = GameObject.Find("Canvas").transform.Find("SliderHP").gameObject.GetComponent<Slider>();
+        sliderHP.maxValue = maxHp;
+        sliderHP.value = currentHp;
+
         shootCoolTime = 0.0f;
     }
 
@@ -96,8 +98,11 @@ public class PlayerController : MonoBehaviour
     void LateUpdate()
     {
         shootCoolTime += Time.deltaTime;
-        Vector3 camPos = Camera.main.transform.position;
-        transform.position = new Vector3(camPos.x, camPos.y, 0f);
+        hurtTime += Time.deltaTime;
+
+        Vector3 _hpBarPos = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y - 0.7f, 0));
+        sliderHP.transform.position = _hpBarPos;
+
         Moving();
     }
 
@@ -106,18 +111,22 @@ public class PlayerController : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             Dir = MoveDir.Left;
+            transform.position += Vector3.left * Time.deltaTime * _speed;
         }
         else if (Input.GetKey(KeyCode.D))
         {
             Dir = MoveDir.Right;
+            transform.position += Vector3.right * Time.deltaTime * _speed;
         }
         else if (Input.GetKey(KeyCode.W))
         {
             Dir = MoveDir.Up;
+            transform.position += Vector3.up * Time.deltaTime * _speed;
         }
         else if (Input.GetKey(KeyCode.S))
         {
             Dir = MoveDir.Down;
+            transform.position += Vector3.down * Time.deltaTime * _speed;
         }
         else
         {
@@ -153,7 +162,6 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        GameObject newArrow = null;
         Vector3 spawnOffset = Vector3.zero;
         float rotationZ = 0f;
         Vector2 forceDir = Vector2.zero;
@@ -182,12 +190,36 @@ public class PlayerController : MonoBehaviour
                 break;
         }
 
-        newArrow = Instantiate(_arrow, transform.position + spawnOffset, Quaternion.Euler(0, 0, rotationZ));
-        newArrow.GetComponent<Rigidbody2D>().AddForce(forceDir * 1000.0f);
+        var newArrow = ObjectPoolManager.instance.GetGo("arrow");
+
+        newArrow.transform.position = transform.position + spawnOffset;
+        newArrow.transform.rotation = Quaternion.Euler(0f, 0f, rotationZ);
+
+        var rb = newArrow.GetComponent<Rigidbody2D>();
+        rb.linearVelocity = Vector2.zero;
+        rb.angularVelocity = 0f;
+        rb.AddForce(forceDir * 1000.0f);
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log(collision.name);
+        if (collision.gameObject.CompareTag("Monster"))
+            Hurt();
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ground"))
+            CameraController._inst.MoveToFar();
+    }
+
+    void Hurt()
+    {
+        if (hurtTime > 3f)
+        {
+            currentHp -= 5;
+            sliderHP.value = currentHp;
+            hurtTime = 0f;
+        }
     }
 }
