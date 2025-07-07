@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     private Animator _animator;
 
-    public float _speed = 5.0f, shootCoolTime, hurtTime, attackTime = 3f;
+    public float _speed = 5.0f, shootCoolTime, hurtTime, attackTime = 4.0f;
     
     public Vector3 offset = new Vector3(0f, 0f, 20f);
     public FinalDir _finalDir;

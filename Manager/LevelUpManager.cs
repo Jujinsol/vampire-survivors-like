@@ -13,6 +13,8 @@ public class LevelUpManager : MonoBehaviour
     GameObject LevelUPUI;
     Button BtnLevel1, BtnLevel2;
 
+    int arrowLevel = 1, garlicLevel = 0;
+
     public class Skill
     {
         public string name;
@@ -43,6 +45,11 @@ public class LevelUpManager : MonoBehaviour
         {
             name = "Arrow Level Up",
             effect = () => GameManager._inst.arrowTime -= 0.5f
+        });
+        skills.Add(new Skill
+        {
+            name = "Garilc Level Up",
+            effect = () =>GameObject.Find("Weapon").transform.Find("Garlic").gameObject.SetActive(true)
         });
     }
 

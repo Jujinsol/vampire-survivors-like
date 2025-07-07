@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
     public static GameManager _inst;
     public Vector3 virtualPlayerPos = Vector3.zero;
     public GameObject player;
-    public float catInitTime = 5.0f, arrowTime = 4.0f;
-    public int arrowPower = 3;
+    public float catInitTime = 2.0f, arrowTime = 4.0f;
+    public int arrowPower = 3, garlicPower = 3;
 
     public float level = 1, currentExp = 0, maxExp = 10;
     Slider sliderEXP;
@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
         sliderEXP.maxValue = maxExp;
         sliderEXP.value = currentExp;
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 10; i++)
         {
             SpawnCat();
         }
@@ -30,22 +30,25 @@ public class GameManager : MonoBehaviour
 
     private void SpawnCat()
     {
-        var newCat = ObjectPoolManager.instance.GetGo("Cat1");
+        for (int i = 0; i < level; i++)
+        {
+            var newCat = ObjectPoolManager.instance.GetGo("Cat1");
 
-        float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
-        float distance = Random.Range(5f, 20f);
+            float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+            float distance = Random.Range(5f, 20f);
 
-        float randX = player.transform.position.x + Mathf.Cos(angle) * distance;
-        float randY = player.transform.position.y + Mathf.Sin(angle) * distance;
+            float randX = player.transform.position.x + Mathf.Cos(angle) * distance;
+            float randY = player.transform.position.y + Mathf.Sin(angle) * distance;
 
-        newCat.transform.position = new Vector3(randX, randY, 0f);
+            newCat.transform.position = new Vector3(randX, randY, 0f);
+        }
     }
 
     private System.Collections.IEnumerator SpawnCatRoutine()
     {
         while (true)
         {
-            yield return new WaitForSeconds(catInitTime); // 5초 대기
+            yield return new WaitForSeconds(catInitTime);
             SpawnCat();
         }
     }
@@ -64,7 +67,7 @@ public class GameManager : MonoBehaviour
         LevelUpManager._inst.LevelUpUI();
         level += 1;
         currentExp = 0;
-        maxExp = level * level * 10;
+        maxExp = 50 + (level - 1) * 25;
 
         sliderEXP.maxValue = maxExp;
         sliderEXP.value = currentExp;

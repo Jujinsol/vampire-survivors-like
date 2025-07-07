@@ -5,13 +5,11 @@ public class Arrow : PoolAble
 {
     public IObjectPool<GameObject> Pool { get; set; }
     float speed = 5f, deleteTime;
-    bool isReleased = false;
-    int check = 0;
 
     void Update()
     {
         deleteTime += Time.deltaTime;
-        if (!isReleased && deleteTime > GameManager._inst.arrowTime)
+        if (deleteTime > GameManager._inst.arrowTime)
         {
             ReleaseObject();
             deleteTime = 0f;
@@ -24,18 +22,12 @@ public class Arrow : PoolAble
     {
         if (collision.CompareTag("Monster"))
         {
-            ReleaseObject();
-            isReleased = true;
-
             Attack(collision.gameObject, GameManager._inst.arrowPower);
         }
     }
 
     void Attack(GameObject obj, int power)
     {
-        Debug.Log("Attack " + check);
-        check++;
-
         obj.GetComponent<MonsterController>()._hp -= power;
         if (obj.GetComponent<MonsterController>()._hp < 0)
         {
