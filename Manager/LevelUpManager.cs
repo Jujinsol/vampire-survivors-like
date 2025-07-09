@@ -13,7 +13,7 @@ public class LevelUpManager : MonoBehaviour
     GameObject LevelUPUI;
     Button BtnLevel1, BtnLevel2;
 
-    int arrowLevel = 1, garlicLevel = 0;
+    public int arrowLevel = 1, garlicLevel = 0;
 
     public class Skill
     {
@@ -34,7 +34,7 @@ public class LevelUpManager : MonoBehaviour
         skills.Add(new Skill
         {
             name = "Speed Up",
-            effect = () => GameManager._inst.player.GetComponent<PlayerController>()._speed += 1f
+            effect = () => GameManager._inst.player.GetComponent<PlayerController>()._speed += 0.2f
         });
         skills.Add(new Skill
         {
@@ -49,7 +49,12 @@ public class LevelUpManager : MonoBehaviour
         skills.Add(new Skill
         {
             name = "Garilc Level Up",
-            effect = () =>GameObject.Find("Weapon").transform.Find("Garlic").gameObject.SetActive(true)
+            effect = () => {
+                if (garlicLevel == 0)
+                    GameObject.Find("Weapon").transform.Find("Garlic").gameObject.SetActive(true);
+                else
+                    GameManager._inst.garlicPower += 0.5f;
+                }
         });
     }
 

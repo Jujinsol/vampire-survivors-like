@@ -6,14 +6,25 @@ public class MonsterController : PoolAble
 {
     public IObjectPool<GameObject> Pool { get; set; }
     public static MonsterController _inst;
-    public int _hp, power;
-    public float _speed = 3.0f;
+    public float _hp, _power, _speed;
     private bool _isStopped = false;
 
-    public int Hp
+    public float Hp
     {
         get => _hp;
         private set => _hp = Mathf.Clamp(value, 0, _hp);
+    }
+
+    public float Power
+    {
+        get => _power;
+        private set => _power = Mathf.Clamp(value, 0, _power);
+    }
+
+    public float Speed
+    {
+        get => _speed;
+        private set => _speed = Mathf.Clamp(value, 0, _speed);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

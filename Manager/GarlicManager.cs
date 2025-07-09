@@ -12,6 +12,7 @@ public class GarlicManager : MonoBehaviour
     {
         _inst = this;
         Garlic = GameObject.Find("Weapon").transform.Find("Garlic").gameObject;
+        LevelUpManager._inst.garlicLevel += 1;
     }
 
     void Update()
@@ -44,7 +45,7 @@ public class GarlicManager : MonoBehaviour
         isAttacking = false;
     }
 
-    void Attack(GameObject obj, int power)
+    void Attack(GameObject obj, float power)
     {
         if (obj.TryGetComponent(out MonsterController monster))
         {

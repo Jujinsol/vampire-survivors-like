@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,9 +7,8 @@ public class GameManager : MonoBehaviour
     public static GameManager _inst;
     public Vector3 virtualPlayerPos = Vector3.zero;
     public GameObject player;
-    public float catInitTime = 2.0f, arrowTime = 4.0f;
-    public int arrowPower = 3, garlicPower = 3;
-
+    public float catInitTime = 2.0f, arrowTime = 2.0f;
+    public float arrowPower = 3, garlicPower = 3;
     public float level = 1, currentExp = 0, maxExp = 10;
     Slider sliderEXP;
 
@@ -20,19 +20,19 @@ public class GameManager : MonoBehaviour
         sliderEXP.maxValue = maxExp;
         sliderEXP.value = currentExp;
 
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 20; i++)
         {
-            SpawnCat();
+            SpawnCat("Cat1");
         }
 
-        StartCoroutine(SpawnCatRoutine());
+        StartCoroutine(SpawnCat1Routine("Cat1"));
     }
 
-    private void SpawnCat()
+    private void SpawnCat(string catName)
     {
         for (int i = 0; i < level; i++)
         {
-            var newCat = ObjectPoolManager.instance.GetGo("Cat1");
+            var newCat = ObjectPoolManager.instance.GetGo(catName);
 
             float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
             float distance = Random.Range(5f, 20f);
@@ -44,12 +44,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private System.Collections.IEnumerator SpawnCatRoutine()
+    private IEnumerator SpawnCat1Routine(string catName)
     {
         while (true)
         {
             yield return new WaitForSeconds(catInitTime);
-            SpawnCat();
+            SpawnCat(catName);
+        }
+    }
+
+    private IEnumerator SpawnCat2Routine(string catName)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(catInitTime);
+            SpawnCat(catName);
         }
     }
 
@@ -62,10 +71,23 @@ public class GameManager : MonoBehaviour
             LevelUp();
     }
 
+    public void Cat2Start()
+    {
+        for (int i = 0; i < 20; i++)
+        {
+            SpawnCat("Cat2");
+        }
+
+        StartCoroutine(SpawnCat2Routine("Cat2"));
+    }
+
     void LevelUp()
     {
-        LevelUpManager._inst.LevelUpUI();
         level += 1;
+        Debug.Log(level);
+        if (level == 2)
+            Cat2Start();
+        LevelUpManager._inst.LevelUpUI();
         currentExp = 0;
         maxExp = 50 + (level - 1) * 25;
 

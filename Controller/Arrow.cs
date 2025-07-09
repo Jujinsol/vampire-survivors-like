@@ -4,7 +4,7 @@ using UnityEngine.Pool;
 public class Arrow : PoolAble
 {
     public IObjectPool<GameObject> Pool { get; set; }
-    float speed = 5f, deleteTime;
+    float speed = 3f, deleteTime;
 
     void Update()
     {
@@ -26,7 +26,7 @@ public class Arrow : PoolAble
         }
     }
 
-    void Attack(GameObject obj, int power)
+    void Attack(GameObject obj, float power)
     {
         obj.GetComponent<MonsterController>()._hp -= power;
         if (obj.GetComponent<MonsterController>()._hp < 0)
